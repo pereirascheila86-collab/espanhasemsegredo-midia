@@ -259,6 +259,8 @@ def ic_folderstamp(a,b):
     return svg(f'<path d="M20 52C20 42 26 36 36 36H78L94 56H164C174 56 180 62 180 72V160C180 170 174 176 164 176H36C26 176 20 170 20 160Z" fill="{a}"/><rect x="44" y="76" width="96" height="78" rx="6" fill="{b}" transform="rotate(-5 92 115)"/><g stroke="{a}" stroke-width="6" stroke-linecap="round"><path d="M58 100H116M58 120H116M58 140H92" transform="rotate(-5 92 115)"/></g><circle cx="148" cy="144" r="26" fill="{b}" stroke="{a}" stroke-width="5"/><path d="M136 144L145 153L161 135" fill="none" stroke="{a}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>')
 def ic_officemail(a,b):
     return svg(f'<path d="M20 90L100 28L180 90Z" fill="{a}"/><rect x="34" y="90" width="132" height="84" fill="{a}"/><rect x="52" y="108" width="34" height="30" rx="4" fill="{b}"/><rect x="114" y="108" width="34" height="30" rx="4" fill="{b}"/><rect x="86" y="138" width="28" height="36" fill="{b}"/><rect x="104" y="14" width="56" height="40" rx="6" fill="{b}" stroke="{a}" stroke-width="5"/><path d="M106 18L132 38L158 18" fill="none" stroke="{a}" stroke-width="5" stroke-linejoin="round"/>')
+def ic_sedelaptop(a,b):
+    return svg(f'<rect x="38" y="40" width="124" height="86" rx="10" fill="{a}"/><rect x="48" y="50" width="104" height="66" rx="4" fill="{b}"/><path d="M18 140H182L170 160H30Z" fill="{a}"/><path d="M70 98L90 78L104 92L132 64" fill="none" stroke="{a}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="150" cy="148" r="26" fill="{b}" stroke="{a}" stroke-width="5"/><path d="M138 148L147 157L163 139" fill="none" stroke="{a}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>')
 def imig_cover():
     inner=f'''<div class=abs style="left:0;top:0;width:1080px;height:1350px;background:{IV}"></div>
     <div class=abs style="left:0;top:0;width:1080px;height:560px;background:{G}"></div>
@@ -276,9 +278,9 @@ def imig_cover():
 IMG0=[imig_cover(),
  contentA('Imigração · Prazo','Quando pedir','O pedido pode ser feito nos 2 meses anteriores ao vencimento. Se for feito no prazo, a validade da autorização atual se prorroga até o fim do procedimento.',ic_renewcal,'iG'),
  contentA('Imigração · Fora do prazo','Pedido fora do prazo','É possível pedir até 3 meses depois do vencimento, mas isso pode levar a um procedimento sancionador.',ic_lateclock,'tI',tw=620),
- contentA('Imigração · Requisitos','Requisitos','Sem antecedentes penais na Espanha, taxa paga e uma das situações previstas, como a continuidade do trabalho ou 9 meses de cotização à Seguridade Social em 12.',ic_reqlist,'gI'),
- contentA('Imigração · Documentos','Documentos','Formulário EX-03 assinado, cópia completa do passaporte vigente e os documentos da situação alegada. Documento estrangeiro exige tradução juramentada e legalização ou apostila.',ic_folderstamp,'sG',tw=620),
- contentA('Imigração · Onde e depois','Onde e depois','Presencial na Oficina de Extranjería ou pela sede Mercurio. A ficha oficial prevê resposta em até 3 meses. Renovação de 4 anos; aprovada, a TIE se pede em 1 mês.',ic_officemail,'iG'),
+ contentA('Imigração · Requisitos','Requisitos','Sem antecedentes penais na Espanha, taxa paga e comprovação de uma das situações previstas na ficha, como a continuidade da relação de trabalho.',ic_reqlist,'gI'),
+ contentA('Imigração · Como pedir','Como pedir','Recomendamos fazer o pedido de forma telemática, pela sede eletrônica Mercurio. A ficha oficial também prevê o pedido presencial na Oficina de Extranjería.',ic_sedelaptop,'sG',tw=620),
+ contentA('Imigração · Depois','Depois do pedido','A ficha oficial prevê resposta em até 3 meses. A renovação vale 4 anos e, aprovada, a TIE deve ser pedida em 1 mês.',ic_officemail,'iG',tw=620),
  closing2(1350,TERRA,IV,'#F3D79A','Fonte: Ministerio de Inclusión, Ficha 13 (maio de 2025).<br>Consulta em 27/10/2026.',cta='Qual é a sua dúvida sobre renovação?')]
 
 IMG=[x.replace('font-size:43px;line-height:1.4','font-size:49px;line-height:1.4').replace('font-size:48px;line-height:1.4','font-size:52px;line-height:1.4') for x in IMG0]

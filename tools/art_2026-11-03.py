@@ -1,6 +1,6 @@
-"""Carrossel de imigração de 30/10/2026: CCSE (7 slides, 1080x1350).
+"""Carrossel de imigração de 03/11/2026: CCSE (7 slides, 1080x1350).
 Estilo do dia: capa verde-petróleo com letras gigantes douradas, miolo areia com cartão-etiqueta lateral.
-Uso: ART_OUT=2026-10-30 python3 tools/art_2026-10-30.py
+Uso: ART_OUT=2026-11-03 python3 tools/art_2026-11-03.py
 """
 import base64, asyncio, os, html
 from playwright.async_api import async_playwright

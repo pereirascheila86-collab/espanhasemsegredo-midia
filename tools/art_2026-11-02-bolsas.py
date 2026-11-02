@@ -147,14 +147,23 @@ def imig():
 <g transform="translate(480 40)">{''.join(f'<g transform="translate({i * 140} {(i % 2) * 20})"><rect width="120" height="150" rx="12" fill="{IV}"/><path d="M18 40H102M18 66H102M18 92H70" stroke="{G}" stroke-width="8" stroke-linecap="round" opacity=".35"/><circle cx="90" cy="124" r="14" fill="{TERRA}"/></g>' for i in range(3))}</g>
 {txt(660, 250, 'histórico · diploma · cartas', 24, IV, 800, 'Inter', 2)}
 <g transform="translate(40 270)"><rect width="840" height="70" rx="18" fill="{TERRA}"/>{txt(420, 46, 'Média de 7,5 a 10 na escala de 1 a 10', 30, IV, 800, 'Inter', 0)}</g>''', VB)
+    # 5 Jaén: 6 vagas + 3.190
+    ill_ja = sv(f'''<g transform="translate(40 40)"><circle cx="150" cy="150" r="150" fill="{IV}"/>{txt(150, 170, '6', 140, G, 700, 'Lora')}{txt(150, 226, 'VAGAS PARA', 22, TERRA, 800, 'Inter', 3)}{txt(150, 256, 'O BRASIL', 22, TERRA, 800, 'Inter', 3)}</g>
+<g transform="translate(400 70)"><circle cx="110" cy="110" r="110" fill="{GOLD}"/><circle cx="110" cy="110" r="90" fill="none" stroke="{G}" stroke-width="5" stroke-dasharray="6 7"/>{txt(110, 112, '3.190 €', 46, G, 700, 'Lora')}{txt(110, 150, 'POR ANO', 22, G, 800, 'Inter', 4)}</g>
+<g transform="translate(660 60)"><rect width="230" height="230" rx="22" fill="{G}"/>{txt(115, 80, '30', 90, PALEG, 700, 'Lora')}{txt(115, 122, 'BOLSAS DE', 22, IV, 800, 'Inter', 3)}{txt(115, 156, 'MESTRADO', 22, IV, 800, 'Inter', 3)}{txt(115, 200, 'média mín. 8', 24, PALEG, 800, 'Inter', 1)}</g>''', VB)
+    # 6 Erasmus Mundus: três nós ligados
+    ill_em = sv(f'''<path d="M230 80L690 80L460 290Z" fill="none" stroke="{G}" stroke-width="8" stroke-dasharray="4 14" stroke-linecap="round"/>
+{''.join(f'<g transform="translate({x} {y})"><circle r="52" fill="{c}"/>{txt(0, 12, t, 34, IV, 700, "Lora")}</g>' for x, y, c, t in [(230, 80, GOLD, 'A'), (690, 80, TERRA, 'B'), (460, 290, G, 'C')])}
+{txt(460, 48, 'ao menos 3 países', 28, G, 800, 'Inter', 3)}
+<g transform="translate(40 250)"><rect width="250" height="86" rx="18" fill="{G}"/>{txt(125, 38, 'OUT A JAN', 26, PALEG, 800, 'Inter', 4)}{txt(125, 68, 'na maioria', 20, IV, 800, 'Inter', 2)}</g>''', VB)
     S = [
         cover,
-        cslide(IV, G, TERRA, K, 'Situação hoje', 'Os pedidos de 2026-2027 já encerraram. As convocatórias de 2027-2028 ainda não foram publicadas nas fontes oficiais consultadas. É o momento de se preparar.', ill2, tsize=62),
-        cslide(SAND, G, TERRA, K, 'Fundación Carolina: ainda não abriu', 'A convocatória é anual e costuma abrir no início de janeiro. A última abriu em 12/01/2026, com prazo de pós-graduação até 02/03 e de doutorado até 09/04.', ill3, tsize=56, lines=2),
-        cslide(G, IV, PALEG, K, 'Carolina: como se candidatar', 'O pedido é online, sem envio de documentos. Faça o cadastro, informe a nota média equivalente e escolha até 5 programas. Depois, confira se o status é Recibido.', ill4.replace(f'fill="{G}"', f'fill="{G2}"', 1), tsize=58),
-        cslide(TERRA, IV, PALEG, K, 'García Lorca: ainda não abriu', 'Em 2026-2027, foram 56 bolsas de mestrado nas universidades públicas da Andaluzia, incluindo Sevilha. Cobrem matrícula e, nas aulas presenciais, alojamento e alimentação.', ill5.replace(f'fill="{G}"', f'fill="{G2}"'), tsize=58),
-        cslide(IV, G, TERRA, K, 'García Lorca: prazo e pedido', 'Em 2026, o prazo foi de 25/03 a 08/04. É preciso morar fora da Espanha, ter média de 7,5 a 10 e carta de referência. A de 2027-2028 ainda não saiu.', ill6, tsize=58),
-        closing(1350, 'Fontes: Fundación Carolina, AUIP e Universidad de Sevilla. Consulta em 02/11/2026.', logo=250, bottom=50),
+        cslide(IV, G, TERRA, K, 'Situação hoje', 'Carolina, García Lorca e Jaén fecharam as edições 2026-2027, e as novas ainda não saíram nas fontes oficiais. Os Erasmus Mundus costumam abrir de outubro a janeiro.', ill2, tsize=62),
+        cslide(SAND, G, TERRA, K, 'Fundación Carolina', 'A convocatória é anual e costuma abrir em janeiro; a última abriu em 12/01/2026. O pedido é online, sem envio de documentos: cadastro, nota média equivalente e até 5 programas.', ill3, tsize=62),
+        cslide(G, IV, PALEG, K, 'Becas García Lorca', 'São 56 bolsas de mestrado nas universidades públicas da Andaluzia, incluindo Sevilha, para quem mora fora da Espanha, com média de 7,5 a 10. Em 2026, o prazo foi de 25/03 a 08/04.', ill5.replace(f'fill="{G}"', f'fill="{G2}"', 1), tsize=62),
+        cslide(TERRA, IV, PALEG, K, 'Universidad de Jaén', 'Em 2026-2027, 30 bolsas de mestrado, com matrícula paga e 3.190 € por ano na modalidade A. Seis vagas foram reservadas ao Brasil. O prazo foi até 15/02/2026.', ill_ja.replace(f'fill="{G}"', f'fill="{G2}"'), tsize=62),
+        cslide(IV, G, TERRA, K, 'Erasmus Mundus', 'Mestrados conjuntos de universidades de ao menos três países, com bolsa completa para os melhores candidatos. O pedido vai direto ao programa escolhido, e cada um tem o seu prazo.', ill_em, tsize=62),
+        closing(1350, 'Fontes: Fundación Carolina, AUIP, Universidad de Jaén e Comissão Europeia. Consulta em 02/11/2026.', logo=250, bottom=50),
     ]
     return S
 

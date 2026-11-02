@@ -210,7 +210,7 @@ def imig():
         cslide(SAND, G, TERRA, K, 'O empregador', 'Precisa estar em dia com as obrigações com a Fazenda e a Seguridade Social e ter meios para manter o contrato de trabalho.', ill4),
         cslide(G, IV, PALEG, K, 'O que não vale', 'O arraigo sociolaboral é para trabalho por conta alheia. A atividade por conta própria não entra neste tipo de autorização.', ill5),
         cslide(IV, G, TERRA, K, 'Como pedir e duração', 'Oficina de Extranjería do seu domicílio, presencial ou pela sede eletrônica, com antecedentes penais e taxa. A ficha oficial prevê resposta em até 3 meses. A autorização vale 1 ano.', ill6, tsize=58),
-        closing(1350, 'Amanhã, parte 3: arraigo socioformativo<br>Fonte: Ministerio de Inclusão, consulta em 28/10/2026.'.replace('Inclusão', 'Inclusión'), logo=250, bottom=50),
+        closing(1350, 'Próximo sábado, parte 3: arraigo socioformativo<br>Fonte: Ministerio de Inclusão, consulta em 28/10/2026.'.replace('Inclusão', 'Inclusión'), logo=250, bottom=50),
     ]
     return S
 

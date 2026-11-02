@@ -226,7 +226,7 @@ def imig():
         cslide(G, IV, PALEG, K, 'Informe de integração social', 'Emitido pela Comunidade Autônoma ou pela prefeitura do lugar onde você está empadronado. É gratuito, sai em até 1 mês e vale 6 meses.', ill4, tsize=58),
         cslide(TERRA, IV, PALEG, K, 'Prazos que importam', 'Se a matrícula tem prazo oficial, o pedido é feito nos 2 meses anteriores ao início. A prova da matrícula é entregue em até 3 meses após a concessão.', ill5.replace(f'fill="{G}"', f'fill="{G2}"')),
         cslide(IV, G, TERRA, K, 'Trabalhar enquanto estuda', 'Permitido trabalhar por conta alheia até 30 horas por semana, com pelo menos o salário mínimo ou o do convênio. Duração da autorização: 1 ano.', ill6, tsize=58),
-        closing(1350, 'Amanhã, parte 4: arraigo familiar<br>Fonte: Ministerio de Inclusión, consulta em 28/10/2026.', logo=250, bottom=50),
+        closing(1350, 'Próximo sábado, parte 4: arraigo familiar<br>Fonte: Ministerio de Inclusión, consulta em 28/10/2026.', logo=250, bottom=50),
     ]
     return S
 

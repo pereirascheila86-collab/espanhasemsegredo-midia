@@ -198,20 +198,53 @@ def cena_outras(w,h):
     t2=f'<rect x="40" y="440" width="880" height="360" rx="28" fill="{TERRA}"/><text x="80" y="520" font-family="Lora" font-weight="700" font-size="56" fill="{IV}">La Navideña</text><text x="80" y="576" font-family="Inter" font-weight="800" font-size="28" letter-spacing="3" fill="#F3D79A">PLAZA DE ESPAÑA</text><text x="80" y="644" font-family="Lora" font-weight="700" font-size="46" fill="{IV}">Finais de nov. a início de jan.</text><text x="80" y="700" font-family="Inter" font-size="34" fill="{IV}">Datas por confirmar</text>'
     patins=f'<path d="M760 540L760 620C760 640 790 650 820 650H880L880 600L840 600L820 560Z" fill="{IV}"/><path d="M740 676H900" stroke="{G}" stroke-width="8" stroke-linecap="round"/>'
     return t1+vaso+t2+patins
+def quiosque(x,y,w,h,cor,body=IV):
+    lis=''.join(f'<rect x="{x+i*w/6:.0f}" y="{y-h*.25:.0f}" width="{w/6:.0f}" height="{h*.25:.0f}" fill="{cor if i%2==0 else IV}"/>' for i in range(6))
+    return (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="{body}"/>{lis}'
+            f'<path d="M{x} {y-h*.25}H{x+w}" stroke="{G}" stroke-width="4"/>'
+            f'<rect x="{x+w*.12}" y="{y+h*.2}" width="{w*.76}" height="{h*.3}" fill="{G}"/><path d="M{x+w*.08} {y+h*.52}H{x+w*.92}" stroke="{GOLD}" stroke-width="8"/>'
+            f'<circle cx="{x+w*.3}" cy="{y+h*.35}" r="10" fill="{GOLD}"/><circle cx="{x+w*.5}" cy="{y+h*.35}" r="10" fill="{TERRA}"/><circle cx="{x+w*.7}" cy="{y+h*.35}" r="10" fill="{GOLD}"/>')
+def vapor(x,y,col=IV):
+    return f'<path d="M{x} {y}C{x-20} {y-30} {x+20} {y-50} {x} {y-80}M{x+26} {y}C{x+6} {y-30} {x+46} {y-50} {x+26} {y-80}" fill="none" stroke="{col}" stroke-width="6" stroke-linecap="round" opacity=".7"/>'
+def cena_nm_capa(w,h):
+    rnd=random.Random(5)
+    ceu=''.join(f'<circle cx="{rnd.randint(30,930)}" cy="{rnd.randint(40,380)}" r="{rnd.choice([3,4,5])}" fill="{IV}" opacity=".8"/>' for _ in range(30))
+    lua=f'<circle cx="760" cy="200" r="100" fill="{SAND}"/><circle cx="800" cy="180" r="92" fill="{G}"/>'
+    pred=''.join(f'<rect x="{x}" y="{y}" width="{ww}" height="{600-y}" fill="{G2}"/>'+''.join(f'<rect x="{x+16+i%3*34}" y="{y+20+i//3*44}" width="18" height="24" fill="{GOLD}" opacity=".7"/>' for i in range(int((600-y-30)//44)*3)) for x,y,ww in [(30,300,150),(210,230,130),(560,330,160),(740,260,170)])
+    chao=f'<rect x="0" y="600" width="{w}" height="{h-600}" fill="{G2}"/><rect x="0" y="600" width="{w}" height="14" fill="{GOLD}"/>'
+    q=quiosque(60,760,240,200,TERRA)+quiosque(360,740,240,220,GOLD)+quiosque(660,760,240,200,TERRA)
+    vp=vapor(180,740)+vapor(480,720)+vapor(780,740)
+    lz=luzes(0,960,640,90,18,3)
+    return ceu+lua+pred+chao+lz+q+vp
+def cena_aberto(w,h):
+    placa=f'<rect x="100" y="70" width="760" height="220" rx="40" fill="{TERRA}"/><rect x="118" y="88" width="724" height="184" rx="30" fill="none" stroke="{IV}" stroke-width="5" stroke-dasharray="3 12" stroke-linecap="round"/><text x="480" y="210" text-anchor="middle" font-family="Lora" font-weight="700" font-size="130" fill="{IV}">ABERTO</text>'
+    cal=f'<rect x="60" y="360" width="400" height="300" rx="28" fill="{G}"/><text x="260" y="440" text-anchor="middle" font-family="Inter" font-weight="800" font-size="26" letter-spacing="4" fill="{IV}">ATÉ</text><text x="260" y="540" text-anchor="middle" font-family="Lora" font-weight="700" font-size="96" fill="{GOLD}">5 jan</text><text x="260" y="610" text-anchor="middle" font-family="Inter" font-weight="800" font-size="34" letter-spacing="3" fill="{IV}">2027</text>'
+    rel=f'<rect x="500" y="360" width="400" height="300" rx="28" fill="{G}"/><circle cx="700" cy="478" r="86" fill="none" stroke="{GOLD}" stroke-width="10"/><path d="M700 478V422M700 478L742 500" stroke="{GOLD}" stroke-width="10" stroke-linecap="round"/><text x="700" y="620" text-anchor="middle" font-family="Lora" font-weight="700" font-size="52" fill="{IV}">12h às 22h</text>'
+    return placa+cal+rel+f'<text x="480" y="730" text-anchor="middle" font-family="Inter" font-weight="800" font-size="28" letter-spacing="5" fill="{G}">HORÁRIO HABITUAL</text>'
+def tile2(x,y,s,bg,fg,svg,lab):
+    return f'<rect x="{x}" y="{y}" width="{s}" height="{s}" rx="30" fill="{bg}"/><g transform="translate({x+s/2-70} {y+30})">{svg}</g><text x="{x+s/2}" y="{y+s-34}" text-anchor="middle" font-family="Inter" font-weight="800" font-size="26" letter-spacing="2" fill="{fg}">{lab}</text>'
+def cena_comidas(w,h):
+    hamb=f'<svg width="140" height="140" viewBox="0 0 140 140"><path d="M14 56C14 14 126 14 126 56Z" fill="{GOLD}"/><rect x="10" y="62" width="120" height="14" rx="7" fill="{G}"/><path d="M14 80H126L114 92H26Z" fill="{TERRA}"/><path d="M14 98C14 94 126 94 126 98V108C126 122 14 122 14 108Z" fill="{GOLD}"/></svg>'
+    donut=f'<svg width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="58" fill="{GOLD}"/><circle cx="70" cy="70" r="20" fill="{TERRA}"/><path d="M30 52L44 44M96 40L108 52M34 92L46 100M100 98L112 88M70 22V34" stroke="{IV}" stroke-width="7" stroke-linecap="round"/></svg>'
+    prato=f'<svg width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="76" r="56" fill="{IV}"/><circle cx="70" cy="76" r="38" fill="none" stroke="{G}" stroke-width="4"/><circle cx="70" cy="76" r="12" fill="{TERRA}"/><path d="M70 18V6M20 32L12 24M120 32L128 24" stroke="{GOLD}" stroke-width="7" stroke-linecap="round"/></svg>'
+    cafe=f'<svg width="140" height="140" viewBox="0 0 140 140"><path d="M24 50H104V90C104 116 24 116 24 90Z" fill="{IV}"/><path d="M104 62H120C132 62 132 92 114 92H104" fill="none" stroke="{IV}" stroke-width="9"/><path d="M50 40C40 28 60 22 50 8M78 40C68 28 88 22 78 8" fill="none" stroke="{GOLD}" stroke-width="6" stroke-linecap="round"/></svg>'
+    t=tile2(40,150,400,TERRA,IV,hamb,'COMIDA DE RUA')+tile2(500,150,400,G,GOLD,donut,'DOCES')+tile2(40,590,400,G,GOLD,prato,'COZINHA DE AUTOR')+tile2(500,590,400,TERRA,IV,cafe,'CAFÉ E CHURROS')
+    sel=f'<rect x="230" y="20" width="500" height="100" rx="50" fill="{GOLD}"/><text x="480" y="90" text-anchor="middle" font-family="Lora" font-weight="700" font-size="58" fill="{G}">15 espaços temáticos</text>'
+    return t+sel
 def reel():
     S=[]
-    S.append(rbv(f'''{Tv('As feiras de Natal de Madrid são <span style="color:@AC;font-style:italic">tradição</span> desta época do ano',80)}
-    {cardv(60,640,960,1100,G,cena_feira_capa(960,1100),-30)}''',1,'green'))
-    S.append(rbv(f'''{Tv('Plaza Mayor: <span style="color:@AC">presépios e enfeites</span>',84)}
-    {Pv('O Mercado de Navidad vai do fim de novembro a 31 de dezembro, com 104 casetas. Vende figuras de presépio, decorações e brinquedos.',480)}
-    {cardv(60,880,960,880,SAND,cena_presepio(960,880),10)}''',2,'terra'))
-    S.append(rbv(f'''{Tv('Uma tradição de <span style="color:@AC">séculos</span>',100)}
-    {Pv('No século XVII, já havia barracas na Plaza de Santa Cruz nesta época. Cerca de duzentos anos depois, uma ordenança legalizou o mercado.',540)}
-    {cardv(60,960,960,780,G,cena_seculos(960,780),-20)}''',3,'ivory'))
-    S.append(rbv(f'''{Tv('Outras feiras <span style="color:@AC">pela cidade</span>',100)}
-    {Pv('Confirme datas e horários com os organizadores.',540)}
-    {cardv(60,740,960,840,SAND,cena_outras(960,840),20)}''',4,'green'))
-    S.append(closing(1920,G,IV,GOLD,'Fonte: Turismo de Madrid (esmadrid.com), Mercadillos navideños e Mercado de Navidad de la Plaza Mayor.<br>Consulta em 14/11/2026.',logo=460,serif_sz=88,top=.2))
+    S.append(rbv(f'''{Tv('Já tem <span style="color:@AC;font-style:italic">feira de Natal gastronômica</span> aberta em Madrid',78)}
+    {cardv(60,660,960,1080,G,cena_nm_capa(960,1080),-20)}''',1,'green'))
+    S.append(rbv(f'''{Tv('Em Nuevos Ministerios, <span style="color:@AC">já está aberta</span>',78)}
+    {Pv('O mercado de Natal fica no estacionamento externo do El Corte Inglés de Castellana e funciona até 5 de janeiro de 2027.',470)}
+    {cardv(60,900,960,860,SAND,cena_aberto(960,860),10)}''',2,'terra'))
+    S.append(rbv(f'''{Tv('O que você <span style="color:@AC">encontra</span>',100)}
+    {Pv('São 15 espaços temáticos, com barracas de comida de rua, doces e cozinha de autor.',540)}
+    {cardv(60,740,960,1000,SAND,cena_comidas(960,1000),20)}''',3,'ivory'))
+    S.append(rbv(f'''{Tv('Plaza Mayor: a feira <span style="color:@AC">tradicional</span>',84)}
+    {Pv('Abre no fim de novembro e vai até 31 de dezembro, com presépios e enfeites. Já no século XVII havia barracas na Plaza de Santa Cruz.',470)}
+    {cardv(60,850,960,880,SAND,cena_presepio(960,880),10)}''',4,'green'))
+    S.append(closing(1920,G,IV,GOLD,'Fontes: Qué!, Madridiario e Infobae (nov. 2026); Turismo de Madrid (esmadrid.com).<br>Consulta em 14/11/2026.',logo=460,serif_sz=88,top=.2))
     return S
 
 async def render(lst,prefix,h):

@@ -1,0 +1,159 @@
+import base64, asyncio, os, html, sys
+from playwright.async_api import async_playwright
+B=os.path.dirname(os.path.abspath(__file__))+'/../'
+OUT=os.environ.get('ART_OUT',B+'saida/')+'/'; os.makedirs(OUT,exist_ok=True)
+LOGO='data:image/png;base64,'+base64.b64encode(open(B+'marca/logo-espanha-sem-segredo.png','rb').read()).decode()
+G='#0F3D3A'; G2='#1E5550'; GOLD='#C9A24A'; TERRA='#B8573A'; IV='#F5F1E8'; INK='#24292C'; SAND='#E9DFC9'
+
+CSS=f'''
+*{{box-sizing:border-box;margin:0;padding:0}}
+body{{width:1080px;overflow:hidden;font-family:Inter,Arial,sans-serif;position:relative}}
+.serif{{font-family:Lora,Georgia,serif}}
+.abs{{position:absolute}}
+.foot{{position:absolute;left:80px;right:80px;bottom:56px;display:flex;align-items:center;justify-content:space-between}}
+.foot .l{{display:flex;align-items:center;gap:18px}}
+.foot img{{width:68px;height:68px}}
+.foot .n{{font-family:Lora,serif;font-style:italic;font-size:30px;letter-spacing:.12em}}
+.foot .c{{font-size:26px;letter-spacing:.16em;font-weight:600}}
+.kick{{font-size:28px;letter-spacing:.2em;font-weight:700;text-transform:uppercase}}
+'''
+
+def bracket(col):
+    return f'<svg class=abs style="right:56px;top:56px" width="230" height="230" viewBox="0 0 230 230"><path d="M0 2H228V230" fill="none" stroke="{col}" stroke-width="3"/></svg>'
+
+def arches(col, w=1080, n=9, op=1):
+    aw=w/n; s=''
+    for i in range(n):
+        x=i*aw
+        s+=f'<path d="M{x+aw*.12:.1f} 150 V70 C{x+aw*.12:.1f} 25 {x+aw*.88:.1f} 25 {x+aw*.88:.1f} 70 V150 Z" fill="none" stroke="{col}" stroke-width="3"/>'
+    return f'<svg class=abs style="left:0;bottom:146px;opacity:{op}" width="{w}" height="96" viewBox="0 0 {w} 150" preserveAspectRatio="none">{s}</svg>'
+
+def foot(col, n=None, tot=None):
+    c=f'<span class=c style="color:{col}">{n} / {tot}</span>' if n else ''
+    return f'<div class=foot><div class=l><img src="{LOGO}"><span class=n style="color:{col}">Espanha Sem Segredo</span></div>{c}</div>'
+
+def page(h,bg,inner):
+    return f'<html><head><meta charset=utf8><style>{CSS} body{{height:{h}px;background:{bg}}}</style></head><body>{inner}</body></html>'
+
+def badge(inner,col_bg,col_fg,size=300,rot=0):
+    return f'<div style="width:{size}px;height:{size}px;border-radius:50%;background:{col_bg};color:{col_fg};display:flex;align-items:center;justify-content:center;transform:rotate({rot}deg)"><div style="width:{int(size*.62)}px;height:{int(size*.62)}px">{inner}</div></div>'
+
+# ---------- content slide, shared by 2 carousels ----------
+def content(n,tot,kick,title,body,icon_fn,theme,numtxt=None):
+    th={'ivory':(IV,G,INK,G2,GOLD,TERRA),'green':(G,IV,IV,GOLD,GOLD,GOLD),'terra':(TERRA,IV,IV,IV,'#E8C77A','#F5F1E8')}[theme]
+    bg,hc,bc,kc,accent,ibg=th
+    # icon colours
+    if theme=='ivory': ia,ib,badge_bg=IV,G,G
+    elif theme=='green': ia,ib,badge_bg=G,GOLD,GOLD
+    else: ia,ib,badge_bg=TERRA,IV,IV
+    if theme=='ivory': ia,ib=IV,GOLD
+    ico=badge(icon_fn(ia,ib),badge_bg,ia,260)
+    big=f'<div class=abs serif style="right:40px;top:120px;font-size:460px;font-weight:700;line-height:1;color:{accent};opacity:.12;letter-spacing:-.04em">{n:02d}</div>'
+    arc=arches(accent,op=.35)
+    fc=hc
+    inner=f'''{big}{bracket(accent)}
+    <div class=abs style="left:80px;top:96px"><div class=kick style="color:{kc}">{html.escape(kick)}</div></div>
+    <div class=abs style="left:80px;top:190px">{ico}</div>
+    <div class=abs style="left:80px;top:500px;width:920px">
+      <div class=serif style="font-size:76px;line-height:1.08;font-weight:700;color:{hc}">{title}</div>
+      <div style="width:130px;height:5px;background:{accent};margin:34px 0 36px"></div>
+      <div style="font-size:42px;line-height:1.42;color:{bc};font-weight:400">{body}</div></div>
+    {arc}{foot(fc,n,tot)}'''
+    return page(1350,bg,inner)
+
+def closing(h,bg,fg,acc,srcs,logo=360,serif_sz=70,pad=80,top=.12):
+    inner=f'''{bracket(acc)}
+    <div class=abs style="left:0;right:0;top:{int(h*top)}px;display:flex;justify-content:center"><img src="{LOGO}" width="{logo}" height="{logo}"></div>
+    <div class="abs serif" style="left:{pad}px;right:{pad}px;top:{int(h*top)+logo+60}px;text-align:center;font-size:{serif_sz}px;line-height:1.14;font-weight:700;color:{fg}">Aqui você fica por dentro de tudo sobre a Espanha</div>
+    <div class=abs style="left:50%;margin-left:-65px;top:{int(h*top)+logo+60+serif_sz*3.5+50}px;width:130px;height:5px;background:{acc}"></div>
+    <div class="abs serif" style="left:{pad}px;right:{pad}px;top:{int(h*top)+logo+60+serif_sz*3.5+90}px;text-align:center;font-size:56px;font-weight:700;color:{acc}">Espanha Sem Segredo</div>
+    <div class=abs style="left:{pad}px;right:{pad}px;top:{int(h*top)+logo+60+serif_sz*3.5+170}px;text-align:center;font-size:40px;color:{fg}">Siga <b>@espanhasemsegredo</b></div>
+    <div class=abs style="left:{pad+20}px;right:{pad+20}px;bottom:70px;text-align:center;font-size:25px;line-height:1.5;color:{fg};opacity:.85">{srcs}<br>Conteúdo informativo, não é assessoria jurídica.</div>'''
+    return page(h,bg,inner)
+
+
+
+import math, subprocess
+def figura(cx,top,s,col):
+    return f'<circle cx="{cx}" cy="{top+14*s}" r="{14*s}" fill="{col}"/><path d="M{cx-18*s} {top+78*s}V{top+46*s}C{cx-18*s} {top+34*s} {cx+18*s} {top+34*s} {cx+18*s} {top+46*s}V{top+78*s}Z" fill="{col}"/>'
+import math, subprocess
+
+# ============ ROTEIROS 1 e 2 (2026-11-15): ascendentes + cartão de familiar UE ============
+def T(x,y,t,sz=40,col=IV,w=700,fam='Inter',anchor='middle',ls=0):
+    return f'<text x="{x}" y="{y}" text-anchor="{anchor}" font-family="{fam}" font-weight="{w}" font-size="{sz}" letter-spacing="{ls}" fill="{col}">{t}</text>'
+def star(cx,cy,r,col):
+    pts=[]
+    for k in range(10):
+        rr=r if k%2==0 else r*.42; an=-math.pi/2+k*math.pi/5
+        pts.append(f'{cx+rr*math.cos(an):.1f},{cy+rr*math.sin(an):.1f}')
+    return f'<polygon points="{" ".join(pts)}" fill="{col}"/>'
+def arco_path(x,y,w,h): return f'M{x} {y+h}V{y+w/2}A{w/2} {w/2} 0 0 1 {x+w} {y+w/2}V{y+h}Z'
+
+INK2='#24292C'
+# ---- ícones carrossel 3 (longa duração) ----
+def ic_infinito(a,b):
+    return f'''<svg width="100%" height="100%" viewBox="0 0 200 200"><path d="M100 100C100 40 12 40 12 100C12 160 100 160 100 100C100 40 188 40 188 100C188 160 100 160 100 100Z" fill="none" stroke="{a}" stroke-width="22" stroke-linejoin="round"/><circle cx="100" cy="100" r="13" fill="{b}"/></svg>'''
+def ic_linha5(a,b):
+    dots=''.join(f'<circle cx="{26+i*37}" cy="100" r="15" fill="{a if i<4 else b}" stroke="{a}" stroke-width="7"/>' for i in range(5))
+    return f'''<svg width="100%" height="100%" viewBox="0 0 200 200"><path d="M26 100H174" stroke="{a}" stroke-width="9"/>{dots}<path d="M26 150H174" stroke="{a}" stroke-width="8" stroke-linecap="round" stroke-dasharray="2 14"/><path d="M26 56V40M63 56V40M100 56V40M137 56V40M174 56V40" stroke="{a}" stroke-width="8" stroke-linecap="round"/></svg>'''
+def ic_aviao(a,b):
+    return f'''<svg width="100%" height="100%" viewBox="0 0 200 200"><path d="M20 96L180 24L132 176L96 120Z" fill="{a}"/><path d="M96 120L180 24L84 108Z" fill="{b}"/><path d="M96 120L92 164L112 140Z" fill="{b}" stroke="{a}" stroke-width="3"/><path d="M14 160C40 150 60 168 84 156" fill="none" stroke="{a}" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 12"/></svg>'''
+def ic_tres_vias(a,b):
+    return f'''<svg width="100%" height="100%" viewBox="0 0 200 200"><path d="M100 184V120M100 120C100 96 40 96 40 52M100 120V46M100 120C100 96 160 96 160 52" fill="none" stroke="{a}" stroke-width="10" stroke-linecap="round"/><path d="M22 66L40 40L58 66Z" fill="{a}"/><path d="M82 60L100 30L118 60Z" fill="{b}" stroke="{a}" stroke-width="5" stroke-linejoin="round"/><path d="M142 66L160 40L178 66Z" fill="{a}"/><circle cx="100" cy="184" r="9" fill="{b}"/></svg>'''
+def ic_ampulheta(a,b):
+    return f'''<svg width="100%" height="100%" viewBox="0 0 200 200"><path d="M46 20H154M46 180H154" stroke="{a}" stroke-width="12" stroke-linecap="round"/><path d="M58 26C58 80 100 90 100 100C100 110 58 120 58 174H142C142 120 100 110 100 100C100 90 142 80 142 26Z" fill="none" stroke="{a}" stroke-width="9" stroke-linejoin="round"/><path d="M72 48H128C122 66 108 76 100 84C92 76 78 66 72 48Z" fill="{b}"/><path d="M80 170C86 140 114 140 120 170Z" fill="{b}"/></svg>'''
+
+# ---- carrossel 3: SELO (cartão com sombra deslocada + carimbo) ----
+def selo(kick,title,body,icon_fn,theme,bs=47):
+    th={'ink':(INK2,IV,G,INK2,GOLD,GOLD,IV),'sand':(SAND,G,IV,IV,TERRA,GOLD,G),'terra':(TERRA,IV,G,INK2,G,'#F3D79A',IV)}[theme]
+    bg,card,tc,bc,sh,stamp,fc=th
+    if theme=='sand': tc,bc=IV,IV
+    if theme=='terra': tc,bc=G,INK2
+    ia=G if theme!='sand' else G
+    tcol={'ink':G,'sand':IV,'terra':G}[theme]; bcol={'ink':INK2,'sand':IV,'terra':INK2}[theme]
+    inner=f'''{bracket(stamp if theme!='terra' else '#F3D79A')}
+    <div class=abs style="left:70px;top:92px"><div style="display:inline-block;padding:12px 26px;border-radius:40px;background:{stamp};color:{INK2 if theme!='sand' else INK2};font-size:26px;letter-spacing:.18em;font-weight:700;text-transform:uppercase">{html.escape(kick)}</div></div>
+    <div class=abs style="left:90px;top:330px;width:940px;height:790px;border-radius:34px;background:{sh}"></div>
+    <div class=abs style="left:70px;top:310px;width:940px;height:790px;border-radius:34px;background:{card}"></div>
+    <div class=abs style="left:740px;top:190px;width:230px;height:230px;transform:rotate(8deg)"><div style="width:230px;height:230px;border-radius:50%;background:{stamp};display:flex;align-items:center;justify-content:center"><div style="width:150px;height:150px">{icon_fn(INK2,TERRA if theme=='terra' else G)}</div></div></div>
+    <svg class=abs style="left:740px;top:190px" width="230" height="230" viewBox="0 0 230 230"><circle cx="115" cy="115" r="124" fill="none" stroke="{card}" stroke-width="5" transform="rotate(8 115 115)" stroke-dasharray="3 10" opacity="0"/></svg>
+    <div class=abs style="left:122px;top:440px;width:836px">
+      <div class=serif style="font-size:70px;line-height:1.08;font-weight:700;color:{tcol}">{title}</div>
+      <div style="width:120px;height:6px;background:{TERRA if theme!='terra' else G};margin:26px 0 30px"></div>
+      <div style="font-size:{bs}px;line-height:1.38;color:{bcol}">{body}</div></div>
+    {foot(fc)}'''
+    return page(1350,bg,inner)
+def capa3():
+    cx,cy,R=540,700,285
+    ring=f'<path id="rc" d="M{cx-R+40} {cy}A{R-40} {R-40} 0 1 1 {cx+R-40} {cy}A{R-40} {R-40} 0 1 1 {cx-R+40} {cy}"/>'
+    inf=f'<g transform="translate({cx},{cy}) scale(1.35)"><path d="M0 0C0-62 -92-62 -92 0C-92 62 0 62 0 0C0-62 92-62 92 0C92 62 0 62 0 0Z" fill="none" stroke="{GOLD}" stroke-width="20" stroke-linejoin="round"/></g>'
+    bars=''.join(f'<rect x="{150+i*152}" y="{1030-i*18}" width="130" height="{40+i*18}" rx="10" fill="{GOLD if i==4 else G2}"/>' for i in range(5))
+    svg=f'''<svg class=abs style="left:0;top:0" width="1080" height="1350"><defs>{ring}</defs>
+      <circle cx="{cx}" cy="{cy}" r="{R}" fill="none" stroke="{GOLD}" stroke-width="7"/>
+      <circle cx="{cx}" cy="{cy}" r="{R-80}" fill="{G}" stroke="{GOLD}" stroke-width="3" stroke-dasharray="4 12"/>
+      <text font-family="Inter" font-weight="700" font-size="34" letter-spacing="9" fill="{GOLD}"><textPath href="#rc">RESIDÊNCIA DE LONGA DURAÇÃO · ESPANHA · RESIDÊNCIA DE LONGA DURAÇÃO · ESPANHA ·</textPath></text>
+      {inf}{bars}</svg>'''
+    inner=f'''{bracket(GOLD)}
+    <div class=abs style="left:80px;top:80px"><div class=kick style="color:{GOLD}">Imigração · Residência</div></div>
+    <div class="abs serif" style="left:80px;top:140px;width:920px;font-size:70px;line-height:1.06;font-weight:700;color:{IV}">Residência de <span style="color:{GOLD};font-style:italic">longa duração</span>: o que é e quem pode pedir?</div>
+    {svg}{foot(IV)}'''
+    return page(1350,INK2,inner)
+SL3=[capa3()]
+SL3.append(selo('O que é','O que é','Autoriza a <b>residir e trabalhar</b> na Espanha por <b>tempo indeterminado</b>, em condições equivalentes às dos espanhóis. Quem pede é a própria pessoa; cidadãos da UE, do EEE e da Suíça não podem.',ic_infinito,'ink',44))
+SL3.append(selo('Requisito geral','Requisito geral','<b>Residência legal e contínua</b> na Espanha nos cinco anos anteriores ao pedido, e <b>sem antecedentes penais</b> na Espanha e nos países de residência dos últimos cinco anos.',ic_linha5,'sand'))
+SL3.append(selo('Ausências','Ausências permitidas','A ficha admite ausências de <b>até seis meses seguidos</b>, com total de <b>até dez meses</b> em cinco anos; por motivo de trabalho, <b>até 18 meses</b> em cinco anos.',ic_aviao,'terra'))
+SL3.append(selo('Outras situações','Outras situações','<b>Basta uma</b>, entre elas: pensão contributiva de aposentadoria, nascido na Espanha com três anos de residência após a maioridade, ou condição de apátrida ou refugiado.',ic_tres_vias,'ink',46))
+SL3.append(selo('Como e prazos','Como e prazos','Pedido na Oficina de Extranjería da província <b>ou eletronicamente</b>. A ficha prevê <b>três meses</b> para a resolução. O cartão (TIE) é renovado, não a autorização.',ic_ampulheta,'sand'))
+SL3.append(closing(1350,INK2,IV,GOLD,'Fonte: Ministerio de Inclusión (residência de longa duração), consulta em 15/11/2026.'))
+
+async def render(lst,folder,prefix,h):
+    os.makedirs(folder,exist_ok=True)
+    async with async_playwright() as p:
+        b=await p.chromium.launch()
+        pg=await b.new_page(viewport={'width':1080,'height':h})
+        for i,htm in enumerate(lst):
+            await pg.set_content(htm); await pg.wait_for_timeout(500)
+            await pg.screenshot(path=f'{folder}/{prefix}-{i+1}.png')
+        await b.close()
+R0=os.environ.get('ART_OUT',B+'2026-11-15')
+asyncio.run(render(SL3,R0+'/roteiro-3-longa-duracao','longa-duracao',1350))
